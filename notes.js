@@ -6,14 +6,10 @@ const warning = chalk.bgYellow.black.bold;
 const success = chalk.bgGreen.black;
 const primary = chalk.bgBlue.white;
 
-const getNotes = () => {
-    return 'Your notes...';
-}
-
 const addNote = (title, body) => {
     const notes = loadNotes();
-    const duplicateNotes = notes.filter((note) => note.title === title);
-    if (duplicateNotes.length === 0) {
+    const duplicateNote = notes.find((note) => note.title === title);
+    if (!duplicateNote) {
         notes.push({
             title: title,
             body: body
@@ -46,6 +42,16 @@ const listNotes = () => {
     }
 }
 
+const readNote = (title) => {
+    const notes = loadNotes();
+    const note = notes.find((note) => note.title === title);
+    if (note) {
+        console.log(primary(note.title), note.body);
+    } else {
+        console.log(error('Note with specified title not found.'));
+    }
+}
+
 const saveNotes = (notes) => {
     const dataJson = JSON.stringify(notes);
     fs.writeFileSync(fileName, dataJson);
@@ -63,8 +69,8 @@ const loadNotes = () => {
 }
 
 module.exports = {
-    getNotes: getNotes,
     addNote: addNote,
     removeNote: removeNote,
-    listNotes: listNotes
+    listNotes: listNotes,
+    readNote: readNote
 }
